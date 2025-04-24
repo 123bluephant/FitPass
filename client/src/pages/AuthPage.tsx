@@ -6,7 +6,13 @@ import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 
 const AuthFormPage: React.FC = () => {
+<<<<<<< HEAD
   const { isAuthenticated, isLoading, login, signup } = useAuth();
+=======
+  const { isAuthenticated, isLoading, login, signup,signInWithGoogle } = useAuth();
+
+  
+>>>>>>> a9f2260 (Added google based authentication)
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
   const [formData, setFormData] = React.useState({
@@ -185,6 +191,7 @@ const AuthFormPage: React.FC = () => {
               </motion.div>
             </form>
 
+<<<<<<< HEAD
             <motion.div variants={itemVariants} className="mt-8">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -212,6 +219,22 @@ const AuthFormPage: React.FC = () => {
                   <img src="/github.svg" className="h-5 w-5" alt="GitHub" />
                   <span className="text-sm">GitHub</span>
                 </button>
+=======
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <div>
+              <button
+  type="button"
+  onClick={signInWithGoogle}
+  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+>
+  <img 
+    src="/google.svg" 
+    alt="Google logo" 
+    className="w-10 h-10"
+  />
+  <span className="ml-2">Continue with Google</span>
+</button>
+>>>>>>> a9f2260 (Added google based authentication)
               </div>
             </motion.div>
           </div>
