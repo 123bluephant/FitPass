@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import Navigation from './components/Navigation';
@@ -10,6 +10,7 @@ import CartPage from './pages/CartPage';
 import OnboardingPage from './pages/OnboardingPage';
 import ProfilePage from './pages/ProfilePage';
 import AuthFormPage from './pages/AuthPage';
+import Membership from './pages/membership';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/signup" element={<AuthFormPage />} />
             <Route path="/Onboarding" element={<OnboardingPage />} />
             <Route path="/Profile" element={<ProfilePage />} />
+            <Route path="/Membership" element={<Membership />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
