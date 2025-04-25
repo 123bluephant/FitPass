@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-
+import { auth, signInWithGoogle as firebaseGoogleSignIn } from '../firebase';
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -7,6 +7,7 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   signup: (email: string, password: string, name: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -68,8 +69,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAuthenticated(true);
   };
 
+  const signInWithGoogle = async () => {
+    try {
+      const user = await firebaseGoogleSignIn();
+      const response = await fetch('http://localhost:5000/api/auth/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: await user.getIdToken() }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Google authentication failed');
+      }
+  
+      const { token } = await response.json();
+      localStorage.setItem('authToken', token);
+      setIsAuthenticated(true);
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout, signup }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout, signup,signInWithGoogle  }}>
       {children}
     </AuthContext.Provider>
   );
