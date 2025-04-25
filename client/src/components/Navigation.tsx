@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, Home, Dumbbell, ShoppingBag, User } from 'lucide-react';
+import { Menu, X, Home, Dumbbell, ShoppingBag, User, UserCircle } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -21,6 +21,7 @@ const Navigation: React.FC = () => {
 
   const authNavItems = [
     ...(isAuthenticated ? [{ path: '/Membership', label: 'Membership', icon: <User size={20} /> }] : []),
+    ...(isAuthenticated ? [{ path: '/profile', label: 'Profile', icon: <UserCircle size={20} /> }] : []),
     { path: '/login', label: isAuthenticated ? 'Logout' : 'Join Now' },
   ];
 

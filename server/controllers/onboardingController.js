@@ -53,10 +53,35 @@ exports.updateOnboarding = async (req, res) => {
 };
 
 // Get user onboarding data
+// exports.getOnboarding = async (req, res) => {
+//   try {
+//     const userId = req.user._id; // Assuming user ID is attached by auth middleware
+//     const onboarding = await UserOnboarding.findOne({ userId });
+
+//     if (!onboarding) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Onboarding data not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       data: onboarding,
+//     });
+//   } catch (error) {
+//     console.error("Onboarding fetch error:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Server error while fetching onboarding data",
+//     });
+//   }
+// };
+
 exports.getOnboarding = async (req, res) => {
   try {
-    const userId = req.user._id; // Assuming user ID is attached by auth middleware
-    const onboarding = await UserOnboarding.findOne({ userId });
+    const userId = req.user._id;
+    const onboarding = await UserOnboarding.findOne({ userId }).populate('userId', 'email username');
 
     if (!onboarding) {
       return res.status(404).json({
