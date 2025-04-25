@@ -7,10 +7,11 @@ import GymsListPage from './pages/GymsListPage';
 import GymDetailPage from './pages/GymDetailPage';
 import MarketplacePage from './pages/MarketplacePage';
 import CartPage from './pages/CartPage';
-import OnboardingPage from './pages/OnboardingPage';
+// import OnboardingPage from './pages/OnboardingPage';
 import ProfilePage from './pages/ProfilePage';
 import AuthFormPage from './pages/AuthPage';
 import Membership from './pages/membership';
+import OnboardingFlow from './pages/OnboardingFlow';
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/login" element={<AuthFormPage />} />
             <Route path="/signup" element={<AuthFormPage />} />
-            <Route path="/Onboarding" element={<OnboardingPage />} />
+            <Route path="/Onboarding" element={<OnboardingFlow />} />
             <Route path="/Profile" element={<ProfilePage />} />
             <Route path="/Membership" element={<Membership />} />
             <Route path="*" element={<Navigate to="/" replace />} />

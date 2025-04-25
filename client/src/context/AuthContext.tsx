@@ -4,23 +4,29 @@ import { auth, signInWithGoogle as firebaseGoogleSignIn } from '../firebase';
 type AuthContextType = {
   isAuthenticated: boolean;
   isLoading: boolean;
+  needsOnboarding: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   signup: (email: string, password: string, name: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  completeOnboarding: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   isLoading: true,
+  needsOnboarding: false,
   login: async () => {},
   logout: () => {},
   signup: async () => {},
+  signInWithGoogle: async () => {},
+  completeOnboarding: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -44,6 +50,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { token } = await response.json();
     localStorage.setItem('authToken', token);
     setIsAuthenticated(true);
+    setNeedsOnboarding(true);
+    setNeedsOnboarding(true);
   };
 
   const logout = () => {
@@ -67,6 +75,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { token } = await response.json();
     localStorage.setItem('authToken', token);
     setIsAuthenticated(true);
+    setNeedsOnboarding(true);
+    setNeedsOnboarding(true);
   };
 
   const signInWithGoogle = async () => {
@@ -92,8 +102,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const completeOnboarding = () => {
+    setNeedsOnboarding(false);
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout, signup,signInWithGoogle  }}>
+    <AuthContext.Provider value={{ 
+      isAuthenticated, 
+      isLoading, 
+      needsOnboarding,
+      login, 
+      logout, 
+      signup,
+      signInWithGoogle,
+      completeOnboarding
+    }}>
       {children}
     </AuthContext.Provider>
   );

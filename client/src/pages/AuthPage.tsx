@@ -7,7 +7,7 @@ import { FiUser, FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 
 const AuthFormPage: React.FC = () => {
 
-  const { isAuthenticated, isLoading, login, signup,signInWithGoogle } = useAuth();
+  const { isAuthenticated, isLoading, needsOnboarding, login, signup, signInWithGoogle } = useAuth();
 
 
   const location = useLocation();
@@ -68,6 +68,9 @@ const AuthFormPage: React.FC = () => {
   }
 
   if (isAuthenticated) {
+    if (needsOnboarding) {
+      return <Navigate to="/Onboarding" replace />;
+    }
     return <Navigate to="/" replace />;
   }
 
