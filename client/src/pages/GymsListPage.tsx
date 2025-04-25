@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import GymCard from '../components/gym/GymCard';
 import { mockGyms } from '../data/mockData';
 import { Gym } from '../types';
-import Slider from '../components/ui/slider';
-import  Checkbox  from '../components/ui/checkbox';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Card from '../components/ui/Card';
+import Checkbox from '../components/ui/checkbox';
+import Slider from '../components/ui/slider';
 
 type FilterOptions = {
   search: string;
@@ -31,27 +31,27 @@ const GymsListPage: React.FC = () => {
 
   useEffect(() => {
     let filteredGyms = [...mockGyms];
-    
+
     // Search filter
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
       filteredGyms = filteredGyms.filter(
-        gym => 
-          gym.name.toLowerCase().includes(searchLower) || 
+        gym =>
+          gym.name.toLowerCase().includes(searchLower) ||
           gym.location.address.toLowerCase().includes(searchLower)
       );
     }
 
     // Category filter
     if (filters.category !== 'all') {
-      filteredGyms = filteredGyms.filter(gym => 
+      filteredGyms = filteredGyms.filter(gym =>
         gym.categories.includes(filters.category)
       );
     }
 
     // Amenities filter
     if (filters.amenities.length > 0) {
-      filteredGyms = filteredGyms.filter(gym => 
+      filteredGyms = filteredGyms.filter(gym =>
         filters.amenities.every(amenity => gym.amenities.includes(amenity))
       );
     }
@@ -90,7 +90,7 @@ const GymsListPage: React.FC = () => {
                 <Input
                   placeholder="Search gyms..."
                   value={filters.search}
-                  onChange={e => setFilters({...filters, search: e.target.value})}
+                  onChange={(e: { target: { value: any; }; }) => setFilters({ ...filters, search: e.target.value })}
                 />
               </div>
 
@@ -102,8 +102,8 @@ const GymsListPage: React.FC = () => {
                   max={200}
                   step={10}
                   value={filters.priceRange}
-                  onValueChange={(value: [number, number]) => 
-                    setFilters({...filters, priceRange: value as [number, number]})
+                  onValueChange={(value: [number, number]) =>
+                    setFilters({ ...filters, priceRange: value as [number, number] })
                   }
                 />
                 <div className="flex justify-between text-sm text-gray-600 mt-2">
@@ -121,7 +121,7 @@ const GymsListPage: React.FC = () => {
                       key={category}
                       variant={filters.category === category ? 'primary' : 'outline'}
                       size="sm"
-                      onClick={() => setFilters({...filters, category})}
+                      onClick={() => setFilters({ ...filters, category })}
                     >
                       {category}
                     </Button>
@@ -134,14 +134,14 @@ const GymsListPage: React.FC = () => {
                 <h3 className="text-sm font-medium mb-3">Amenities</h3>
                 <div className="space-y-2">
                   {amenities.map(amenity => (
-                    <label key={amenity} className="flex items-center space-x-2">
+                    <label key={amenity} className="flex items-center gap-2">
                       <Checkbox
                         checked={filters.amenities.includes(amenity)}
                         onCheckedChange={(checked: any) => {
                           const updated = checked
                             ? [...filters.amenities, amenity]
                             : filters.amenities.filter(a => a !== amenity);
-                          setFilters({...filters, amenities: updated});
+                          setFilters({ ...filters, amenities: updated });
                         }}
                       />
                       <span className="text-sm">{amenity}</span>
@@ -154,38 +154,53 @@ const GymsListPage: React.FC = () => {
               <div>
                 <h3 className="text-sm font-medium mb-3">Sort By</h3>
                 <div className="space-y-2">
-                  <label className="flex items-center space-x-2">
+                  <label className="flex items-center gap-2">
                     <input
                       type="radio"
                       name="sort"
                       checked={filters.sortBy === 'distance'}
-                      onChange={() => setFilters({...filters, sortBy: 'distance'})}
+                      onChange={() => setFilters({ ...filters, sortBy: 'distance' })}
                       className="form-radio text-blue-600"
                     />
                     <span className="text-sm">Distance</span>
                   </label>
-                  <label className="flex items-center space-x-2">
+                  <label className="flex items-center gap-2">
                     <input
                       type="radio"
                       name="sort"
                       checked={filters.sortBy === 'price'}
-                      onChange={() => setFilters({...filters, sortBy: 'price'})}
+                      onChange={() => setFilters({ ...filters, sortBy: 'price' })}
                       className="form-radio text-blue-600"
                     />
                     <span className="text-sm">Price</span>
                   </label>
-                  <label className="flex items-center space-x-2">
+                  <label className="flex items-center gap-2">
                     <input
                       type="radio"
                       name="sort"
                       checked={filters.sortBy === 'rating'}
-                      onChange={() => setFilters({...filters, sortBy: 'rating'})}
+                      onChange={() => setFilters({ ...filters, sortBy: 'rating' })}
                       className="form-radio text-blue-600"
                     />
                     <span className="text-sm">Rating</span>
                   </label>
                 </div>
               </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setFilters({
+                  search: '',
+                  amenities: [],
+                  priceRange: [0, 200],
+                  category: 'all',
+                  sortBy: 'distance'
+                })}
+                fullWidth
+              >
+                Reset Filters
+              </Button>
             </div>
           </Card>
 

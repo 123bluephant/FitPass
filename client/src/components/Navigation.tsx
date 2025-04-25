@@ -3,6 +3,7 @@ import { Menu, X, Home, Dumbbell, ShoppingBag, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { FcAbout } from 'react-icons/fc';
 
 const Navigation: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,6 +16,7 @@ const Navigation: React.FC = () => {
 
   const mainNavItems = [
     { path: '/', label: 'Home', icon: <Home size={20} /> },
+    { path: '/about', label: 'About', icon: <FcAbout size={20} /> },
     { path: '/gyms', label: 'Gyms', icon: <Dumbbell size={20} /> },
     { path: '/marketplace', label: 'Shop', icon: <ShoppingBag size={20} /> },
   ];

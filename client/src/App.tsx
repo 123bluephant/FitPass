@@ -10,7 +10,7 @@ import CartPage from './pages/CartPage';
 import OnboardingPage from './pages/OnboardingPage';
 import ProfilePage from './pages/ProfilePage';
 import AuthFormPage from './pages/AuthPage';
-import Membership from './pages/membership';
+import Membership from './pages/membership';  
 
 function App() {
   return (

@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const admin = require('../firebase');
 
 // User registration controller
 exports.register = async (req, res) => {
@@ -55,3 +56,33 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Something went wrong' });
   }
 };
+
+
+exports.googleAuth = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const { uid, email, name } = decodedToken;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = new User({
+        email,
+        username: name,
+        googleId: uid,
+        password: undefined
+      });
+      await user.save();
+    }
+
+    const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    res.status(200).json({ token: jwtToken });
+  } catch (error) {
+    console.error('Google auth error:', error);
+    res.status(500).json({ message: 'Google authentication failed' });
+  }
+}
