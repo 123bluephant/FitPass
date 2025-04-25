@@ -10,7 +10,9 @@ import CartPage from './pages/CartPage';
 import OnboardingPage from './pages/OnboardingPage';
 import ProfilePage from './pages/ProfilePage';
 import AuthFormPage from './pages/AuthPage';
-import Membership from './pages/membership';  
+import Membership from './pages/membership';
+import AboutPage from './pages/AboutPage';
+import Footer from './components/footer';
 
 function App() {
   return (
@@ -18,7 +20,7 @@ function App() {
       <Router>
         <div className="min-h-screen bg-gray-50">
           <Navigation />
-          
+
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/gyms" element={<GymsListPage />} />
@@ -30,8 +32,10 @@ function App() {
             <Route path="/Onboarding" element={<OnboardingPage />} />
             <Route path="/Profile" element={<ProfilePage />} />
             <Route path="/Membership" element={<Membership />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <Footer />
         </div>
       </Router>
     </CartProvider>
