@@ -14,26 +14,38 @@ type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  needsOnboarding: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   signup: (email: string, password: string, name: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  completeOnboarding: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isAuthenticated: false,
   isLoading: true,
+<<<<<<< HEAD
   login: async () => { },
   logout: () => { },
   signup: async () => { },
   signInWithGoogle: async () => { },
+=======
+  needsOnboarding: false,
+  login: async () => {},
+  logout: () => {},
+  signup: async () => {},
+  signInWithGoogle: async () => {},
+  completeOnboarding: () => {},
+>>>>>>> 9aeb743d5d6375eb97cffb1ce803134c289ae6d4
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -86,6 +98,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('authToken', token);
     setUser(user);
     setIsAuthenticated(true);
+    setNeedsOnboarding(true);
+    setNeedsOnboarding(true);
   };
 
   const logout = () => {
@@ -111,6 +125,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('authToken', token);
     setUser(user);
     setIsAuthenticated(true);
+    setNeedsOnboarding(true);
+    setNeedsOnboarding(true);
   };
 
   const signInWithGoogle = async () => {
@@ -137,7 +153,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const completeOnboarding = () => {
+    setNeedsOnboarding(false);
+  };
+
   return (
+<<<<<<< HEAD
     <AuthContext.Provider
       value={{
         user,
@@ -149,6 +170,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signInWithGoogle
       }}
     >
+=======
+    <AuthContext.Provider value={{ 
+      isAuthenticated, 
+      isLoading, 
+      needsOnboarding,
+      login, 
+      logout, 
+      signup,
+      signInWithGoogle,
+      completeOnboarding
+    }}>
+>>>>>>> 9aeb743d5d6375eb97cffb1ce803134c289ae6d4
       {children}
     </AuthContext.Provider>
   );

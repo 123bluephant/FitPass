@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import { Menu, X, Home, Dumbbell, ShoppingBag, User } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+=======
+import { Menu, X, Home, Dumbbell, ShoppingBag, User, UserCircle } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+>>>>>>> 9aeb743d5d6375eb97cffb1ce803134c289ae6d4
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { FcAbout } from 'react-icons/fc';
@@ -28,6 +33,7 @@ const Navigation: React.FC = () => {
   ];
 
   const authNavItems = [
+<<<<<<< HEAD
     ...(isAuthenticated ? [
       { path: '/membership', label: 'Membership', icon: <User size={20} /> },
       { path: '/cart', label: 'Checkout', icon: <ShoppingBag size={20} /> },
@@ -37,6 +43,11 @@ const Navigation: React.FC = () => {
       label: isAuthenticated ? 'Profile' : 'Join Now',
       icon: <User size={20} />
     },
+=======
+    ...(isAuthenticated ? [{ path: '/Membership', label: 'Membership', icon: <User size={20} /> }] : []),
+    ...(isAuthenticated ? [{ path: '/profile', label: 'Profile', icon: <UserCircle size={20} /> }] : []),
+    { path: '/login', label: isAuthenticated ? 'Logout' : 'Join Now' },
+>>>>>>> 9aeb743d5d6375eb97cffb1ce803134c289ae6d4
   ];
 
   const activeNavClass = 'text-blue-600 font-medium bg-blue-50 px-4 py-2 rounded-lg';
