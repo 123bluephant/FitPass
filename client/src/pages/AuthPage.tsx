@@ -6,10 +6,7 @@ import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 
 const AuthFormPage: React.FC = () => {
-
   const { isAuthenticated, isLoading, needsOnboarding, login, signup, signInWithGoogle } = useAuth();
-
-
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
   const [formData, setFormData] = React.useState({
@@ -26,14 +23,22 @@ const AuthFormPage: React.FC = () => {
       y: 0,
       transition: { 
         duration: 0.6,
-        ease: "easeOut"
+        ease: "easeOut",
+        staggerChildren: 0.1
       }
     }
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 }
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.4,
+        ease: "easeOut"
+      }
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,11 +62,11 @@ const AuthFormPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 to-purple-900">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-          className="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent"
+          className="h-12 w-12 rounded-full border-4 border-white border-t-transparent"
         />
       </div>
     );
@@ -75,58 +80,64 @@ const AuthFormPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 to-purple-900 flex items-center justify-center p-4">
       <motion.div
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="sm:mx-auto sm:w-full sm:max-w-md"
+        className="w-full max-w-md"
       >
-        <motion.div variants={itemVariants} className="flex flex-col items-center">
-          <Dumbbell className="h-16 w-16 text-blue-600 mb-4 transform transition-transform hover:rotate-12" />
-          <h2 className="text-center text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        {/* Logo and Heading */}
+        <motion.div 
+          variants={itemVariants}
+          className="text-center mb-10"
+        >
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg mb-4">
+            <Dumbbell className="h-10 w-10 text-white" />
+          </div>
+          <h2 className="text-3xl font-bold text-white">
             {isLoginPage ? 'Welcome Back' : 'Get Started'}
           </h2>
-          <p className="mt-2 text-center text-gray-600 text-sm">
+          <p className="mt-2 text-blue-100">
             {isLoginPage 
               ? 'Continue your fitness journey' 
               : 'Create your account in seconds'}
           </p>
         </motion.div>
 
+        {/* Auth Card */}
         <motion.div
-          variants={containerVariants}
-          className="mt-8 bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl"
+          variants={itemVariants}
+          className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl overflow-hidden border border-white/10"
         >
           <div className="px-8 py-10">
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center"
+                className="mb-6 bg-red-500/20 border border-red-400/30 rounded-lg p-4 text-red-100 text-sm"
               >
-                <svg className="h-5 w-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-                <span className="text-red-600 text-sm">{error}</span>
+                {error}
               </motion.div>
             )}
 
             <form className="space-y-6" onSubmit={handleSubmit}>
               {!isLoginPage && (
                 <motion.div variants={itemVariants}>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-white mb-2">
                     Full Name
                   </label>
                   <div className="relative">
-                    <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiUser className="h-5 w-5 text-blue-200" />
+                    </div>
                     <input
                       name="name"
                       type="text"
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-blue-200/50"
                       placeholder="John Doe"
                     />
                   </div>
@@ -134,29 +145,33 @@ const AuthFormPage: React.FC = () => {
               )}
 
               <motion.div variants={itemVariants}>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Email Address
                 </label>
                 <div className="relative">
-                  <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiMail className="h-5 w-5 text-blue-200" />
+                  </div>
                   <input
                     name="email"
                     type="email"
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-blue-200/50"
                     placeholder="john@example.com"
                   />
                 </div>
               </motion.div>
 
               <motion.div variants={itemVariants}>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Password
                 </label>
                 <div className="relative">
-                  <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiLock className="h-5 w-5 text-blue-200" />
+                  </div>
                   <input
                     name="password"
                     type="password"
@@ -164,7 +179,7 @@ const AuthFormPage: React.FC = () => {
                     minLength={6}
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-blue-200/50"
                     placeholder="••••••••"
                   />
                 </div>
@@ -172,7 +187,7 @@ const AuthFormPage: React.FC = () => {
                   <div className="mt-2 flex justify-end">
                     <Link 
                       to="/forgot-password" 
-                      className="text-sm text-blue-600 hover:text-blue-500 transition-colors"
+                      className="text-sm text-blue-200 hover:text-white transition-colors"
                     >
                       Forgot password?
                     </Link>
@@ -183,7 +198,7 @@ const AuthFormPage: React.FC = () => {
               <motion.div variants={itemVariants}>
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg transition-all transform hover:scale-[1.02]"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg transition-all transform hover:scale-[1.02] shadow-lg"
                 >
                   <span>{isLoginPage ? 'Sign In' : 'Create Account'}</span>
                   <FiArrowRight className="w-4 h-4" />
@@ -191,31 +206,41 @@ const AuthFormPage: React.FC = () => {
               </motion.div>
             </form>
 
+            <div className="mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-white/20"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-transparent text-blue-100">
+                    Or continue with
+                  </span>
+                </div>
+              </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <div>
+              <div className="mt-6">
                 <button
                   type="button"
                   onClick={signInWithGoogle}
-                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white/5 border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all"
                 >
                   <img 
                     src="/google.svg" 
                     alt="Google logo" 
-                    className="w-10 h-10"
+                    className="h-5 w-5"
                   />
-                  <span className="ml-2">Continue with Google</span>
+                  <span>Google</span>
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="px-8 py-4 bg-gray-50 border-t border-gray-100">
-            <p className="text-center text-sm text-gray-600">
+          <div className="px-8 py-4 bg-white/5 border-t border-white/10 text-center">
+            <p className="text-sm text-blue-100">
               {isLoginPage ? "Don't have an account? " : "Already have an account? "}
               <Link
                 to={isLoginPage ? "/signup" : "/login"}
-                className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                className="font-medium text-white hover:text-blue-200 transition-colors"
               >
                 {isLoginPage ? "Sign up" : "Sign in"}
               </Link>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
-import { FiArrowRight, FiArrowLeft } from 'react-icons/fi';
+import { FiArrowRight, FiArrowLeft, FiCheck } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 
 interface OnboardingData {
@@ -17,7 +17,11 @@ const OnboardingFlow: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-900 to-purple-900">
+        <div className="w-16 h-16 border-4 border-white border-t-blue-400 rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
@@ -48,17 +52,18 @@ const OnboardingFlow: React.FC = () => {
   const slideVariants = {
     enter: (direction: number) => ({
       x: direction > 0 ? 1000 : -1000,
-      opacity: 0
+      opacity: 0,
+      transition: { duration: 0.3, ease: "easeInOut" }
     }),
     center: {
-      zIndex: 1,
       x: 0,
-      opacity: 1
+      opacity: 1,
+      transition: { duration: 0.3, ease: "easeInOut" }
     },
     exit: (direction: number) => ({
-      zIndex: 0,
       x: direction < 0 ? 1000 : -1000,
-      opacity: 0
+      opacity: 0,
+      transition: { duration: 0.3, ease: "easeInOut" }
     })
   };
 
@@ -105,20 +110,30 @@ const OnboardingFlow: React.FC = () => {
         return (
           <motion.div
             key="welcome"
+            custom={1}
             variants={slideVariants}
             initial="enter"
             animate="center"
             exit="exit"
-            className="text-center"
+            className="text-center py-8"
           >
-            <h2 className="text-3xl font-bold mb-6">Welcome to MainGym!</h2>
-            <p className="text-gray-600 mb-8">Let's personalize your fitness journey</p>
-            <button
+            <div className="mb-10">
+              <div className="h-40 w-40 mx-auto bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <div className="h-32 w-32 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                  <div className="h-24 w-24 bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-full backdrop-blur-sm"></div>
+                </div>
+              </div>
+            </div>
+            <h2 className="text-4xl font-bold mb-4 text-white">Welcome to <span className="bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">MainGym</span></h2>
+            <p className="text-blue-100 mb-10 text-lg">Let's personalize your fitness journey</p>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handleNext}
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
+              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-10 py-4 rounded-xl text-lg font-medium shadow-lg hover:shadow-xl transition-all"
             >
-              Get Started <FiArrowRight />
-            </button>
+              Get Started <FiArrowRight className="inline ml-2" />
+            </motion.button>
           </motion.div>
         );
 
@@ -126,36 +141,39 @@ const OnboardingFlow: React.FC = () => {
         return (
           <motion.div
             key="personal-info"
+            custom={1}
             variants={slideVariants}
             initial="enter"
             animate="center"
             exit="exit"
-            className="space-y-6"
+            className="py-6"
           >
-            <h2 className="text-2xl font-bold mb-6">Tell us about yourself</h2>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Your name"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
-              <input
-                type="number"
-                name="age"
-                value={formData.age || ''}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Your age"
-                min="13"
-                max="120"
-              />
+            <h2 className="text-2xl font-bold mb-8 text-white">Personal Information</h2>
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-blue-100 mb-3">Full Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="w-full px-5 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-blue-200 transition-all"
+                  placeholder="Enter your name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-blue-100 mb-3">Age</label>
+                <input
+                  type="number"
+                  name="age"
+                  value={formData.age || ''}
+                  onChange={handleInputChange}
+                  className="w-full px-5 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-blue-200 transition-all"
+                  placeholder="Enter your age"
+                  min="13"
+                  max="120"
+                />
+              </div>
             </div>
           </motion.div>
         );
@@ -164,24 +182,30 @@ const OnboardingFlow: React.FC = () => {
         return (
           <motion.div
             key="gender"
+            custom={1}
             variants={slideVariants}
             initial="enter"
             animate="center"
             exit="exit"
-            className="space-y-6"
+            className="py-6"
           >
-            <h2 className="text-2xl font-bold mb-6">Select your gender</h2>
-            <div className="space-y-4">
+            <h2 className="text-2xl font-bold mb-8 text-white">Gender</h2>
+            <div className="relative">
               <select
                 name="gender"
                 value={formData.gender}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-5 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white appearance-none pr-12 transition-all"
               >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="male" className="bg-blue-900 text-white">Male</option>
+                <option value="female" className="bg-blue-900 text-white">Female</option>
+                <option value="other" className="bg-blue-900 text-white">Other</option>
               </select>
+              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <svg className="w-5 h-5 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
           </motion.div>
         );
@@ -190,20 +214,21 @@ const OnboardingFlow: React.FC = () => {
         return (
           <motion.div
             key="location"
+            custom={1}
             variants={slideVariants}
             initial="enter"
             animate="center"
             exit="exit"
-            className="space-y-6"
+            className="py-6"
           >
-            <h2 className="text-2xl font-bold mb-6">Where are you located?</h2>
+            <h2 className="text-2xl font-bold mb-8 text-white">Your Location</h2>
             <div>
               <input
                 type="text"
                 name="location"
                 value={formData.location}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-5 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-blue-200 transition-all"
                 placeholder="Enter your city"
               />
             </div>
@@ -214,24 +239,34 @@ const OnboardingFlow: React.FC = () => {
         return (
           <motion.div
             key="fitness-goals"
+            custom={1}
             variants={slideVariants}
             initial="enter"
             animate="center"
             exit="exit"
-            className="space-y-6"
+            className="py-6"
           >
-            <h2 className="text-2xl font-bold mb-6">What are your fitness goals?</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <h2 className="text-2xl font-bold mb-8 text-white">Fitness Goals</h2>
+            <div className="grid grid-cols-1 gap-3">
               {fitnessGoalOptions.map((goal) => (
-                <button
+                <motion.button
                   key={goal}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => toggleFitnessGoal(goal)}
-                  className={`p-4 rounded-lg border ${formData.fitnessGoals.includes(goal)
-                    ? 'bg-blue-100 border-blue-500 text-blue-700'
-                    : 'border-gray-200 hover:border-blue-500'} transition-colors`}
+                  className={`px-5 py-4 rounded-xl border-2 text-left transition-all ${formData.fitnessGoals.includes(goal)
+                    ? 'bg-gradient-to-r from-blue-500/30 to-purple-500/30 border-blue-400 text-white shadow-md'
+                    : 'bg-white/5 border-white/10 hover:border-blue-300 text-blue-100'}`}
                 >
-                  {goal}
-                </button>
+                  <div className="flex items-center justify-between">
+                    <span>{goal}</span>
+                    {formData.fitnessGoals.includes(goal) && (
+                      <div className="h-6 w-6 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                        <FiCheck className="text-white text-sm" />
+                      </div>
+                    )}
+                  </div>
+                </motion.button>
               ))}
             </div>
           </motion.div>
@@ -243,52 +278,63 @@ const OnboardingFlow: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-gradient-to-br from-blue-800/30 via-purple-800/30 to-indigo-800/30 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden border border-white/10">
+        <div className="px-8 pt-8">
+          <div className="flex items-center mb-6">
             {step > 0 && (
-              <button
+              <motion.button
+                whileHover={{ x: -2 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleBack}
-                className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+                className="flex items-center justify-center h-10 w-10 bg-white/10 backdrop-blur-sm rounded-lg text-blue-200 hover:text-white transition-colors mr-3"
               >
-                <FiArrowLeft className="mr-2" /> Back
-              </button>
+                <FiArrowLeft />
+              </motion.button>
             )}
-            <div className="flex-1 ml-4">
-              <div className="h-2 bg-gray-200 rounded-full">
-                <div
-                  className="h-2 bg-blue-600 rounded-full transition-all duration-300"
-                  style={{ width: `${(step / 4) * 100}%` }}
-                />
-              </div>
+            <div className="flex-1 bg-white/10 backdrop-blur-sm h-2 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-blue-400 to-purple-500"
+                initial={{ width: `${(step / 4) * 100}%` }}
+                animate={{ width: `${(step / 4) * 100}%` }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              />
             </div>
           </div>
         </div>
 
-        <AnimatePresence mode='wait' initial={false}>
-          {renderStep()}
-        </AnimatePresence>
+        <div className="px-8 pb-8">
+          <AnimatePresence mode='wait' custom={1}>
+            {renderStep()}
+          </AnimatePresence>
 
-        {step > 0 && (
-          <div className="mt-8 flex justify-end">
-            {step === 4 ? (
-              <button
-                onClick={handleSubmit}
-                className="bg-blue-600 text-white px-8 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
-              >
-                Complete <FiArrowRight />
-              </button>
-            ) : (
-              <button
-                onClick={handleNext}
-                className="bg-blue-600 text-white px-8 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
-              >
-                Next <FiArrowRight />
-              </button>
-            )}
-          </div>
-        )}
+          {step > 0 && (
+            <div className="mt-8 flex justify-end">
+              {step === 4 ? (
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleSubmit}
+                  disabled={formData.fitnessGoals.length === 0}
+                  className={`px-8 py-3 rounded-xl text-lg font-medium shadow-lg hover:shadow-xl transition-all ${formData.fitnessGoals.length === 0
+                    ? 'bg-white/10 text-white/50 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'}`}
+                >
+                  Complete <FiArrowRight className="inline ml-2" />
+                </motion.button>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleNext}
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-xl text-lg font-medium shadow-lg hover:shadow-xl transition-all"
+                >
+                  Continue <FiArrowRight className="inline ml-2" />
+                </motion.button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
