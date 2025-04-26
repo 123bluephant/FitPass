@@ -189,7 +189,7 @@ const AuthFormPage: React.FC = () => {
             </form>
 
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
+            <div className="mt-6 flex justify-center">
               <div>
                 <button
                   type="button"

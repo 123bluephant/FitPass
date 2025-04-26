@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import OnboardingSteps from '../components/auth/OnboardingSteps';
 
 const OnboardingPage: React.FC = () => {
-  const { user, isLoading } = useAuth();
+  const { user: user, isLoading } = useAuth();
 
   if (isLoading) {
     return (

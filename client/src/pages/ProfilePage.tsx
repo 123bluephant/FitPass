@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { 
-  User, 
+  User as UserIcon, 
   MapPin, 
   CreditCard, 
   Package, 
@@ -15,18 +15,81 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import { gymCategories } from '../data/mockData';
 
+// Type definitions
+type HomeLocation = {
+  address?: string;
+  city?: string;
+  country?: string;
+};
+
+type UserType = {
+  id: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  gymCategory?: 'Basic' | 'Premium' | 'Elite';
+  homeLocation?: HomeLocation;
+};
+
+type ProfileNavItemProps = {
+  icon: React.ReactNode;
+  text: string;
+  isActive?: boolean;
+  onClick?: () => void;
+};
+
+const ProfileNavItem: React.FC<ProfileNavItemProps> = ({ 
+  icon, 
+  text, 
+  isActive = false, 
+  onClick 
+}) => {
+  return (
+    <button
+      type="button"
+      className={`w-full px-4 py-3 flex items-center text-left ${
+        isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'
+      }`}
+      onClick={onClick}
+    >
+      <span className="mr-3">{icon}</span>
+      <span className={isActive ? 'font-medium' : ''}>{text}</span>
+    </button>
+  );
+};
+
 const ProfilePage: React.FC = () => {
   const { user, logout, isAuthenticated } = useAuth();
+  const safeUser = user as UserType | null;
 
-  if (!isAuthenticated || !user) {
+  if (!isAuthenticated || !safeUser) {
     return <Navigate to="/login" replace />;
   }
 
   const getCategoryColor = (category?: string) => {
-    if (category === 'Basic') return 'bg-blue-100 text-blue-800';
-    if (category === 'Premium') return 'bg-purple-100 text-purple-800';
-    if (category === 'Elite') return 'bg-orange-100 text-orange-800';
-    return 'bg-gray-100 text-gray-800';
+    switch (category) {
+      case 'Basic':
+        return 'bg-blue-100 text-blue-800';
+      case 'Premium':
+        return 'bg-purple-100 text-purple-800';
+      case 'Elite':
+        return 'bg-orange-100 text-orange-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getMonthlyPrice = (category?: string) => {
+    switch (category) {
+      case 'Basic':
+        return '29.99';
+      case 'Premium':
+        return '59.99';
+      case 'Elite':
+        return '99.99';
+      default:
+        return '29.99';
+    }
   };
 
   return (
@@ -40,20 +103,22 @@ const ProfilePage: React.FC = () => {
             <Card className="mb-6">
               <div className="text-center mb-6">
                 <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                  <User className="h-12 w-12 text-blue-600" />
+                  <UserIcon className="h-12 w-12 text-blue-600" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-900">
-                  {user.name || 'FitPass User'}
+                  {safeUser.name || 'FitPass User'}
                 </h2>
-                <p className="text-gray-600 mt-1">{user.phone}</p>
+                <p className="text-gray-600 mt-1">
+                  {safeUser.phone || 'No phone number provided'}
+                </p>
                 
-                {user.gymCategory && (
+                {safeUser.gymCategory && (
                   <div className="mt-3 flex justify-center">
                     <Badge
                       variant="primary"
-                      className={getCategoryColor(user.gymCategory)}
+                      className={getCategoryColor(safeUser.gymCategory)}
                     >
-                      {user.gymCategory} Membership
+                      {safeUser.gymCategory} Membership
                     </Badge>
                   </div>
                 )}
@@ -74,7 +139,7 @@ const ProfilePage: React.FC = () => {
             <Card className="overflow-hidden">
               <div className="divide-y divide-gray-200">
                 <ProfileNavItem
-                  icon={<User size={18} />}
+                  icon={<UserIcon size={18} />}
                   text="Personal Information"
                   isActive={true}
                 />
@@ -109,31 +174,39 @@ const ProfilePage: React.FC = () => {
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name
+                  </label>
                   <div className="px-4 py-2 bg-gray-50 rounded border border-gray-200">
-                    {user.name || 'Not set'}
+                    {safeUser.name || 'Not set'}
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone Number
+                  </label>
                   <div className="px-4 py-2 bg-gray-50 rounded border border-gray-200">
-                    {user.phone}
+                    {safeUser.phone || 'Not provided'}
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address
+                  </label>
                   <div className="px-4 py-2 bg-gray-50 rounded border border-gray-200">
-                    {user.email || 'Not set'}
+                    {safeUser.email || 'Not set'}
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Home Location</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Home Location
+                  </label>
                   <div className="px-4 py-2 bg-gray-50 rounded border border-gray-200 flex items-center">
                     <MapPin className="h-4 w-4 text-gray-500 mr-2" />
-                    {user.homeLocation?.address || 'Not set'}
+                    {safeUser.homeLocation?.address || 'Not set'}
                   </div>
                 </div>
               </div>
@@ -143,18 +216,14 @@ const ProfilePage: React.FC = () => {
             <Card>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-gray-900">Membership</h2>
-                <Badge
-                  variant="success"
-                >
-                  Active
-                </Badge>
+                <Badge variant="success">Active</Badge>
               </div>
               
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="flex items-start">
                   <div className={`h-12 w-12 rounded-md flex items-center justify-center ${
-                    user.gymCategory === 'Basic' ? 'bg-blue-100 text-blue-600' :
-                    user.gymCategory === 'Premium' ? 'bg-purple-100 text-purple-600' :
+                    safeUser.gymCategory === 'Basic' ? 'bg-blue-100 text-blue-600' :
+                    safeUser.gymCategory === 'Premium' ? 'bg-purple-100 text-purple-600' :
                     'bg-orange-100 text-orange-600'
                   }`}>
                     <CreditCard className="h-6 w-6" />
@@ -162,15 +231,14 @@ const ProfilePage: React.FC = () => {
                   
                   <div className="ml-4">
                     <h3 className="text-lg font-semibold text-gray-900">
-                      {user.gymCategory || 'Basic'} Membership
+                      {safeUser.gymCategory || 'Basic'} Membership
                     </h3>
                     <p className="text-gray-600 text-sm">
                       Next billing: June 15, 2025
                     </p>
                     <div className="mt-2">
                       <span className="text-lg font-bold text-blue-600">
-                        ${user.gymCategory === 'Basic' ? '29.99' : 
-                          user.gymCategory === 'Premium' ? '59.99' : '99.99'}
+                        ${getMonthlyPrice(safeUser.gymCategory)}
                       </span>
                       <span className="text-gray-600">/month</span>
                     </div>
@@ -183,16 +251,15 @@ const ProfilePage: React.FC = () => {
                 {gymCategories.map((category) => (
                   <div 
                     key={category}
-                    className={`
-                      border rounded-lg p-4 
-                      ${user.gymCategory === category 
+                    className={`border rounded-lg p-4 ${
+                      safeUser.gymCategory === category 
                         ? 'bg-blue-50 border-blue-200' 
-                        : 'border-gray-200'}
-                    `}
+                        : 'border-gray-200'
+                    }`}
                   >
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-medium text-gray-900">{category}</h4>
-                      {user.gymCategory === category && (
+                      {safeUser.gymCategory === category && (
                         <Badge variant="primary" size="sm">Current</Badge>
                       )}
                     </div>
@@ -204,15 +271,14 @@ const ProfilePage: React.FC = () => {
                     </div>
                     
                     <div className="font-bold text-blue-600 mb-3">
-                      ${category === 'Basic' ? '29.99' : 
-                        category === 'Premium' ? '59.99' : '99.99'}
+                      ${getMonthlyPrice(category)}
                       <span className="text-sm font-normal text-gray-600">/mo</span>
                     </div>
                     
-                    {user.gymCategory !== category && (
+                    {safeUser.gymCategory !== category && (
                       <Button variant="outline" size="sm" fullWidth>
-                        {user.gymCategory && 
-                         gymCategories.indexOf(category) > gymCategories.indexOf(user.gymCategory) 
+                        {safeUser.gymCategory && 
+                         gymCategories.indexOf(category) > gymCategories.indexOf(safeUser.gymCategory) 
                           ? 'Upgrade' 
                           : 'Switch Plan'}
                       </Button>
@@ -233,9 +299,8 @@ const ProfilePage: React.FC = () => {
               
               <div className="space-y-6">
                 <div className="relative pl-8 pb-6">
-                  <div className="absolute top-0 left-0 h-full w-px bg-gray-200"></div>
-                  <div className="absolute top-0 left-0 h-4 w-4 rounded-full bg-blue-600 -ml-2"></div>
-                  
+                  <div className="absolute top-0 left-0 h-full w-px bg-gray-200" />
+                  <div className="absolute top-0 left-0 h-4 w-4 rounded-full bg-blue-600 -ml-2" />
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-medium text-gray-900">Gym Visit</h3>
@@ -246,9 +311,8 @@ const ProfilePage: React.FC = () => {
                 </div>
                 
                 <div className="relative pl-8 pb-6">
-                  <div className="absolute top-0 left-0 h-full w-px bg-gray-200"></div>
-                  <div className="absolute top-0 left-0 h-4 w-4 rounded-full bg-green-600 -ml-2"></div>
-                  
+                  <div className="absolute top-0 left-0 h-full w-px bg-gray-200" />
+                  <div className="absolute top-0 left-0 h-4 w-4 rounded-full bg-green-600 -ml-2" />
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-medium text-gray-900">Order Placed</h3>
@@ -259,9 +323,8 @@ const ProfilePage: React.FC = () => {
                 </div>
                 
                 <div className="relative pl-8">
-                  <div className="absolute top-0 left-0 h-full w-px bg-gray-200"></div>
-                  <div className="absolute top-0 left-0 h-4 w-4 rounded-full bg-purple-600 -ml-2"></div>
-                  
+                  <div className="absolute top-0 left-0 h-full w-px bg-gray-200" />
+                  <div className="absolute top-0 left-0 h-4 w-4 rounded-full bg-purple-600 -ml-2" />
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-medium text-gray-900">Slot Booked</h3>
@@ -280,25 +343,6 @@ const ProfilePage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
-
-const ProfileNavItem: React.FC<{
-  icon: React.ReactNode;
-  text: string;
-  isActive?: boolean;
-  onClick?: () => void;
-}> = ({ icon, text, isActive = false, onClick }) => {
-  return (
-    <button
-      className={`w-full px-4 py-3 flex items-center text-left ${
-        isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'
-      }`}
-      onClick={onClick}
-    >
-      <span className="mr-3">{icon}</span>
-      <span className={isActive ? 'font-medium' : ''}>{text}</span>
-    </button>
   );
 };
 

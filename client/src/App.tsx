@@ -8,16 +8,17 @@ import GymDetailPage from './pages/GymDetailPage';
 import MarketplacePage from './pages/MarketplacePage';
 import CartPage from './pages/CartPage';
 import OnboardingPage from './pages/OnboardingPage';
-import ProfilePage from './pages/ProfilePage';
 import AuthFormPage from './pages/AuthPage';
 import Membership from './pages/membership';
 import AboutPage from './pages/AboutPage';
 import Footer from './components/footer';
+import Profile from './pages/ProfilePage';
 
 function App() {
   return (
     <CartProvider>
       <Router>
+
         <div className="min-h-screen bg-gray-50">
           <Navigation />
 
@@ -30,9 +31,9 @@ function App() {
             <Route path="/login" element={<AuthFormPage />} />
             <Route path="/signup" element={<AuthFormPage />} />
             <Route path="/Onboarding" element={<OnboardingPage />} />
-            <Route path="/Profile" element={<ProfilePage />} />
             <Route path="/Membership" element={<Membership />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           <Footer />

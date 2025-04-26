@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, X, Home, Dumbbell, ShoppingBag, User } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { FcAbout } from 'react-icons/fc';
@@ -8,11 +8,17 @@ import { FcAbout } from 'react-icons/fc';
 const Navigation: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cart } = useCart();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const closeMenu = () => setIsMenuOpen(false);
+  
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
+    // Ensure any potential extension conflicts are handled
+    window.postMessage({ type: 'navigationEvent' }, '*');
+  };
 
   const mainNavItems = [
     { path: '/', label: 'Home', icon: <Home size={20} /> },
@@ -22,19 +28,38 @@ const Navigation: React.FC = () => {
   ];
 
   const authNavItems = [
-    ...(isAuthenticated ? [{ path: '/Membership', label: 'Membership', icon: <User size={20} /> }] : []),
-    { path: '/login', label: isAuthenticated ? 'Logout' : 'Join Now' },
+    ...(isAuthenticated ? [
+      { path: '/membership', label: 'Membership', icon: <User size={20} /> },
+      { path: '/cart', label: 'Checkout', icon: <ShoppingBag size={20} /> },
+    ] : []),
+    { 
+      path: isAuthenticated ? '/profile' : '/login', 
+      label: isAuthenticated ? 'Profile' : 'Join Now',
+      icon: <User size={20} />
+    },
   ];
 
   const activeNavClass = 'text-blue-600 font-medium bg-blue-50 px-4 py-2 rounded-lg';
   const inactiveNavClass = 'text-gray-600 hover:text-blue-600 transition-colors duration-200';
+
+  const handleProfileNavigation = (e: React.MouseEvent, path: string) => {
+    e.preventDefault();
+    handleMenuClose();
+    navigate(path);
+    // Add slight delay to prevent extension conflicts
+    setTimeout(() => window.dispatchEvent(new Event('popstate')), 50);
+  };
 
   return (
     <nav className="bg-white shadow-sm fixed w-full top-0 left-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2" onClick={closeMenu}>
+          <Link 
+            to="/" 
+            className="flex items-center space-x-2" 
+            onClick={handleMenuClose}
+          >
             <Dumbbell className="h-8 w-8 text-blue-600" />
             <span className="text-xl font-bold text-gray-900">FitPass</span>
           </Link>
@@ -49,6 +74,7 @@ const Navigation: React.FC = () => {
                   className={`flex items-center space-x-2 px-4 py-2 ${
                     location.pathname === item.path ? activeNavClass : inactiveNavClass
                   }`}
+                  onClick={handleMenuClose}
                 >
                   {item.icon}
                   <span>{item.label}</span>
@@ -68,12 +94,18 @@ const Navigation: React.FC = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                onClick={item.label === 'Logout' ? logout : undefined}
+                onClick={(e) => handleProfileNavigation(e, item.path)}
                 className={`flex items-center space-x-2 px-4 py-2 ${
                   location.pathname === item.path ? activeNavClass : inactiveNavClass
                 }`}
               >
+                {item.icon}
                 <span>{item.label}</span>
+                {item.path === '/cart' && cart.items.length > 0 && (
+                  <span className="ml-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {cart.items.reduce((sum, item) => sum + item.quantity, 0)}
+                  </span>
+                )}
               </Link>
             ))}
           </div>
@@ -83,6 +115,7 @@ const Navigation: React.FC = () => {
             <button
               onClick={toggleMenu}
               className="text-gray-600 hover:text-blue-600 focus:outline-none p-2 rounded-lg hover:bg-gray-100"
+              aria-label="Toggle navigation menu"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -98,10 +131,7 @@ const Navigation: React.FC = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                onClick={() => {
-                  closeMenu();
-                  if (item.label === 'Logout') logout();
-                }}
+                onClick={(e) => handleProfileNavigation(e, item.path)}
                 className={`flex items-center space-x-3 px-4 py-3 rounded-lg ${
                   location.pathname === item.path
                     ? 'bg-blue-50 text-blue-600'
@@ -110,7 +140,7 @@ const Navigation: React.FC = () => {
               >
                 {item.icon}
                 <span>{item.label}</span>
-                {item.path === '/marketplace' && cart.items.length > 0 && (
+                {(item.path === '/marketplace' || item.path === '/cart') && cart.items.length > 0 && (
                   <span className="ml-auto bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {cart.items.reduce((sum, item) => sum + item.quantity, 0)}
                   </span>

@@ -8,6 +8,7 @@ interface MembershipCardProps {
   features: string[];
   isPopular?: boolean;
   gradient?: string;
+  isFree?: boolean;
 }
 
 const MembershipCard = ({
@@ -16,42 +17,45 @@ const MembershipCard = ({
   period,
   features,
   isPopular = false,
-  gradient = 'from-primary-500 to-secondary-600',
+  gradient = 'from-primary-600 to-secondary-700',
+  isFree = false,
 }: MembershipCardProps) => {
   return (
     <motion.div
-      whileHover={{ y: -5 }}
-      className={`card relative overflow-hidden ${
-        isPopular ? 'border-2 border-primary-500' : ''
+      whileHover={{ y: -8 }}
+      className={`relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 ${
+        isPopular ? 'border-3 border-blue-500' : 'border border-gray-200'
       }`}
     >
       {isPopular && (
-        <div className={`absolute top-0 right-0 bg-gradient-to-r ${gradient} text-white text-xs font-semibold px-3 py-1 rounded-bl-lg`}>
-          Most Popular
+        <div className={`absolute top-4 -right-4 bg-gradient-to-r ${gradient} text-white text-sm font-bold px-4 py-1 rotate-45 shadow-md`}>
+          Popular
         </div>
       )}
-      <div className="p-6">
-        <h3 className="text-xl font-bold mb-2">{title}</h3>
+      <div className="p-8">
+        <h3 className="text-2xl font-bold mb-4 text-gray-900">{title}</h3>
         <div className="mb-6">
-          <span className="text-4xl font-bold">{price}</span>
-          <span className="text-gray-600">/{period}</span>
+          <span className="text-5xl font-extrabold text-gray-900">{price}</span>
+          <span className="text-lg text-gray-600">/{period}</span>
         </div>
-        <ul className="space-y-3 mb-8">
+        <ul className="space-y-4 mb-8">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start">
-              <Check className="h-5 w-5 text-accent-500 mr-2 flex-shrink-0 mt-0.5" />
-              <span>{feature}</span>
+              <Check className="h-6 w-6 text-emerald-500 mr-3 flex-shrink-0 mt-0.5" />
+              <span className="text-gray-700 text-lg">{feature}</span>
             </li>
           ))}
         </ul>
         <button 
-          className={`w-full py-3 px-4 rounded-lg text-white font-semibold transition-all hover:shadow-lg ${
-            isPopular 
-              ? `bg-gradient-to-r ${gradient} hover:shadow-primary-300/50` 
-              : 'bg-gray-800 hover:bg-gray-900 hover:shadow-gray-300/30'
+          className={`w-full py-4 px-6 rounded-xl font-bold transition-all duration-300 ${
+            isFree
+              ? `bg-gradient-to-r ${gradient} text-white hover:shadow-lg hover:shadow-gray-600/30`
+              : isPopular 
+                ? `bg-gradient-to-r ${gradient} text-white hover:shadow-lg hover:shadow-blue-400/30`
+                : 'bg-gray-900 text-white hover:bg-gray-800 hover:shadow-md'
           }`}
         >
-          Get Started
+          {isFree ? 'Join Free' : 'Join Now'}
         </button>
       </div>
     </motion.div>

@@ -1,30 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import MembershipCard from '../components/cards/MembershipCard';
 import TestimonialCard from '../components/cards/TestimonialCard';
 import { CheckCircle, X } from 'lucide-react';
 
 const Membership = () => {
+  const { isAuthenticated, isLoading } = useAuth();
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
 
-  const toggleBillingPeriod = () => {
-    setBillingPeriod(billingPeriod === 'monthly' ? 'annual' : 'monthly');
-  };
+  // Redirect if not logged in
+  if (!isLoading && !isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   const monthlyPlans = [
     {
       title: 'Basic',
-      price: '$49',
+      price: '$0',
       period: 'month',
       features: [
-        'Access to main gym area',
-        'Basic fitness assessment',
-        'Standard gym equipment',
+        'Free gym access',
+        'Basic equipment usage',
         'Locker room access',
-        'Online workout tracking',
+        'Open workout areas',
+        'Free fitness assessment'
       ],
       isPopular: false,
       gradient: 'from-gray-600 to-gray-800',
+      isFree: true
     },
     {
       title: 'Premium',
@@ -32,14 +37,15 @@ const Membership = () => {
       period: 'month',
       features: [
         'All Basic features',
-        '3 sessions with a personal trainer',
-        'Access to all group classes',
+        '3 personal training sessions',
+        'Unlimited group classes',
         'Nutrition consultation',
-        'Access to pool and sauna',
-        'Fitness app premium access',
+        'Pool & sauna access',
+        'Premium fitness app'
       ],
       isPopular: true,
-      gradient: 'from-primary-600 to-secondary-700',
+      gradient: 'from-blue-600 to-purple-600',
+      isFree: false
     },
     {
       title: 'Elite',
@@ -48,65 +54,64 @@ const Membership = () => {
       features: [
         'All Premium features',
         'Unlimited personal training',
-        'Exclusive members-only hours',
-        'Quarterly fitness assessments',
-        'Recovery room access',
-        'Guest passes (2 per month)',
-        'Priority class booking',
+        'Exclusive member hours',
+        'Advanced recovery facilities',
+        'Guest passes',
+        'Priority booking'
       ],
       isPopular: false,
-      gradient: 'from-accent-600 to-secondary-700',
+      gradient: 'from-emerald-600 to-cyan-600',
+      isFree: false
     },
   ];
 
   const annualPlans = [
     {
       title: 'Basic',
-      price: '$39',
-      period: 'month',
+      price: '$0',
+      period: 'year',
       features: [
-        'Access to main gym area',
-        'Basic fitness assessment',
-        'Standard gym equipment',
-        'Locker room access',
-        'Online workout tracking',
-        'Two months free',
+        'Free gym access',
+        '2 free training sessions',
+        'Annual fitness report',
+        'Priority access',
+        'Exclusive free classes'
       ],
       isPopular: false,
       gradient: 'from-gray-600 to-gray-800',
+      isFree: true
     },
     {
       title: 'Premium',
-      price: '$69',
-      period: 'month',
+      price: '$759',
+      period: 'year',
       features: [
         'All Basic features',
-        '3 sessions with a personal trainer',
-        'Access to all group classes',
-        'Nutrition consultation',
-        'Access to pool and sauna',
-        'Fitness app premium access',
-        'Two months free',
+        '36 training sessions',
+        'Unlimited classes',
+        'Advanced nutrition plans',
+        'Spa facilities access',
+        'Premium app access'
       ],
       isPopular: true,
-      gradient: 'from-primary-600 to-secondary-700',
+      gradient: 'from-blue-600 to-purple-600',
+      isFree: false
     },
     {
       title: 'Elite',
-      price: '$109',
-      period: 'month',
+      price: '$1299',
+      period: 'year',
       features: [
         'All Premium features',
-        'Unlimited personal training',
-        'Exclusive members-only hours',
-        'Quarterly fitness assessments',
-        'Recovery room access',
-        'Guest passes (2 per month)',
-        'Priority class booking',
-        'Two months free',
+        'Unlimited training',
+        'VIP facilities access',
+        'Quarterly assessments',
+        'Personal locker',
+        'Premium guest passes'
       ],
       isPopular: false,
-      gradient: 'from-accent-600 to-secondary-700',
+      gradient: 'from-emerald-600 to-cyan-600',
+      isFree: false
     },
   ];
 
@@ -133,18 +138,12 @@ const Membership = () => {
     },
     {
       name: 'Personal Training',
-      basic: 'Additional fee',
-      premium: '3 sessions/month',
+      basic: '2 sessions',
+      premium: '3 sessions/mo',
       elite: 'Unlimited',
     },
     {
-      name: 'Nutrition Consultation',
-      basic: false,
-      premium: true,
-      elite: true,
-    },
-    {
-      name: 'Pool & Sauna',
+      name: 'Pool Access',
       basic: false,
       premium: true,
       elite: true,
@@ -158,8 +157,8 @@ const Membership = () => {
     {
       name: 'Guest Passes',
       basic: false,
-      premium: false,
-      elite: '2 per month',
+      premium: '2/month',
+      elite: '4/month',
     },
     {
       name: 'Priority Booking',
@@ -169,15 +168,39 @@ const Membership = () => {
     },
   ];
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          className="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
+      {/* Free Plan Badge */}
+      <div className="container mx-auto px-4 pt-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full inline-flex items-center shadow-sm mb-8"
+        >
+          <span className="mr-2">🎉</span>
+          <span>Basic plan is always free for members!</span>
+        </motion.div>
+      </div>
+
       {/* Hero Section */}
-      <section className="pt-28 pb-20 bg-gradient-to-r from-blue-600 to-purple-600">
+      <section className="pt-12 pb-16 bg-gradient-to-r from-blue-600 to-purple-600">
         <div className="container px-4 mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
             className="text-center max-w-3xl mx-auto"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -190,13 +213,12 @@ const Membership = () => {
         </div>
       </section>
 
-      {/* Pricing Toggle */}
+      {/* Pricing Section */}
       <section className="py-12">
         <div className="container px-4 mx-auto">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
             className="flex justify-center mb-8"
           >
             <div className="bg-gray-100 p-1.5 rounded-full flex">
@@ -242,6 +264,7 @@ const Membership = () => {
                   features={plan.features}
                   isPopular={plan.isPopular}
                   gradient={plan.gradient}
+                  isFree={plan.isFree}
                 />
               </motion.div>
             ))}
@@ -254,26 +277,18 @@ const Membership = () => {
         <div className="container px-4 mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true, amount: 0.2 }}
+            animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold text-gray-900 mb-3">
               Plan Comparison
             </h2>
             <p className="text-gray-600 max-w-xl mx-auto">
-              Detailed breakdown of features across all membership tiers
+              Detailed breakdown of membership features across all tiers
             </p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="bg-white rounded-xl shadow-xl overflow-hidden"
-          >
+          <div className="bg-white rounded-xl shadow-xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -301,13 +316,45 @@ const Membership = () => {
                       <td className="px-6 py-4 font-medium text-gray-700">
                         {feature.name}
                       </td>
-                      {/* Keep cell content exactly the same */}
+                      <td className="px-6 py-4 text-center">
+                        {typeof feature.basic === 'boolean' ? (
+                          feature.basic ? (
+                            <CheckCircle className="h-5 w-5 text-green-500 mx-auto" />
+                          ) : (
+                            <X className="h-5 w-5 text-gray-400 mx-auto" />
+                          )
+                        ) : (
+                          <span className="text-gray-600">{feature.basic}</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {typeof feature.premium === 'boolean' ? (
+                          feature.premium ? (
+                            <CheckCircle className="h-5 w-5 text-green-500 mx-auto" />
+                          ) : (
+                            <X className="h-5 w-5 text-gray-400 mx-auto" />
+                          )
+                        ) : (
+                          <span className="text-gray-600">{feature.premium}</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {typeof feature.elite === 'boolean' ? (
+                          feature.elite ? (
+                            <CheckCircle className="h-5 w-5 text-green-500 mx-auto" />
+                          ) : (
+                            <X className="h-5 w-5 text-gray-400 mx-auto" />
+                          )
+                        ) : (
+                          <span className="text-gray-600">{feature.elite}</span>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -316,16 +363,14 @@ const Membership = () => {
         <div className="container px-4 mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true, amount: 0.2 }}
+            animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold text-gray-900 mb-3">
-              Success Stories
+              Member Experiences
             </h2>
             <p className="text-gray-600 max-w-xl mx-auto">
-              Hear from our members about their fitness transformations
+              Hear from our community about their fitness journeys
             </p>
           </motion.div>
 
@@ -333,84 +378,30 @@ const Membership = () => {
             {[
               {
                 name: "Sarah Johnson",
-                image: "/testimonials/sarah.jpg",
-                text: "FitPass transformed my fitness journey. The premium membership gave me access to amazing trainers and classes!",
-                plan: "Premium Member"
+                role: "Premium Member",
+                testimonial: "The perfect balance of quality and affordability. Transformed my fitness routine completely!",
+                rating: 5
               },
               {
-                name: "Mike Chen",
-                image: "/testimonials/mike.jpg",
-                text: "The Elite membership is worth every penny. Unlimited PT sessions helped me reach my goals faster.",
-                plan: "Elite Member"
+                name: "Michael Chen",
+                role: "Elite Member",
+                testimonial: "Worth every penny. The unlimited training sessions helped me achieve my goals faster.",
+                rating: 5
               },
               {
-                name: "Emily Rodriguez",
-                image: "/testimonials/emily.jpg",
-                text: "Great value with the Basic plan. All the essential equipment I need for my workouts.",
-                plan: "Basic Member"
+                name: "Emma Wilson",
+                role: "Basic Member",
+                testimonial: "Great free option with all the essentials. Perfect for starting my fitness journey!",
+                rating: 4
               }
             ].map((testimonial, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
               >
-                <TestimonialCard rating={0} testimonial={''} memberSince={''} {...testimonial} />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="py-16 bg-white">
-        <div className="container px-4 mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true, amount: 0.2 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-gray-600 max-w-xl mx-auto">
-              Get answers to common membership questions
-            </p>
-          </motion.div>
-
-          <div className="max-w-4xl mx-auto space-y-6">
-            {[
-              {
-                question: "Can I freeze my membership?",
-                answer: "Yes, you can freeze your membership for up to 3 months per year with valid reason like medical conditions or extended travel."
-              },
-              {
-                question: "What's included in the free consultation?",
-                answer: "The free consultation includes a facility tour, fitness assessment, and discussion with a trainer about your goals and the best membership plan for you."
-              },
-              {
-                question: "Are there any signup fees?",
-                answer: "No, we don't charge any signup or initiation fees. You only pay for your chosen membership plan."
-              },
-              {
-                question: "Can I cancel my membership anytime?",
-                answer: "Yes, you can cancel your membership with 30 days notice. Annual memberships may be subject to an early termination fee."
-              }
-            ].map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="p-6 bg-gray-50 rounded-xl border border-gray-200"
-              >
-                <h3 className="text-xl font-semibold mb-3">{faq.question}</h3>
-                <p className="text-gray-700">{faq.answer}</p>
+                <TestimonialCard image={''} memberSince={''} {...testimonial} />
               </motion.div>
             ))}
           </div>
@@ -422,29 +413,15 @@ const Membership = () => {
         <div className="container px-4 mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             className="max-w-2xl mx-auto"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               Start Your Transformation Today
             </h2>
-            <div className="flex justify-center">
-              <button className="px-8 py-4 bg-white text-blue-600 rounded-full font-semibold hover:bg-gray-50 transition-colors shadow-xl flex items-center gap-2">
-                <span>Schedule Free Consultation</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+            <div className="flex justify-center gap-4">
+              <button className="px-8 py-3 bg-white text-blue-600 rounded-full font-semibold hover:bg-gray-100 transition-colors shadow-lg">
+                Get Started
               </button>
             </div>
           </motion.div>
