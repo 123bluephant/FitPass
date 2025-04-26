@@ -13,12 +13,10 @@ import Membership from './pages/membership';
 import AboutPage from './pages/AboutPage';
 import Footer from './components/footer';
 import Profile from './pages/ProfilePage';
-
 function App() {
   return (
     <CartProvider>
       <Router>
-
         <div className="min-h-screen bg-gray-50">
           <Navigation />
 
@@ -42,5 +40,4 @@ function App() {
     </CartProvider>
   );
 }
-
 export default App;

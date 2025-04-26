@@ -164,15 +164,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signup,
         signInWithGoogle,
         needsOnboarding,
-        completeOnboarding,
-        user,
-        isAuthenticated,
-        isLoading,
-        login,
-        logout,
-        signup,
-        signInWithGoogle,
-        needsOnboarding,
         completeOnboarding
       }}
     >
