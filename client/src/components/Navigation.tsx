@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD
-import { Menu, X, Home, Dumbbell, ShoppingBag, User } from 'lucide-react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-=======
 import { Menu, X, Home, Dumbbell, ShoppingBag, User, UserCircle } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
->>>>>>> 9aeb743d5d6375eb97cffb1ce803134c289ae6d4
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { FcAbout } from 'react-icons/fc';
