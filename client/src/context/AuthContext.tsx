@@ -26,19 +26,15 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   isAuthenticated: false,
   isLoading: true,
-<<<<<<< HEAD
+
   login: async () => { },
   logout: () => { },
   signup: async () => { },
   signInWithGoogle: async () => { },
-=======
   needsOnboarding: false,
-  login: async () => {},
-  logout: () => {},
-  signup: async () => {},
-  signInWithGoogle: async () => {},
-  completeOnboarding: () => {},
->>>>>>> 9aeb743d5d6375eb97cffb1ce803134c289ae6d4
+  completeOnboarding: function (): void {
+    throw new Error('Function not implemented.');
+  }
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -158,7 +154,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-<<<<<<< HEAD
     <AuthContext.Provider
       value={{
         user,
@@ -167,21 +162,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         logout,
         signup,
-        signInWithGoogle
+        signInWithGoogle,
+        needsOnboarding,
+        completeOnboarding,
+        user,
+        isAuthenticated,
+        isLoading,
+        login,
+        logout,
+        signup,
+        signInWithGoogle,
+        needsOnboarding,
+        completeOnboarding
       }}
     >
-=======
-    <AuthContext.Provider value={{ 
-      isAuthenticated, 
-      isLoading, 
-      needsOnboarding,
-      login, 
-      logout, 
-      signup,
-      signInWithGoogle,
-      completeOnboarding
-    }}>
->>>>>>> 9aeb743d5d6375eb97cffb1ce803134c289ae6d4
       {children}
     </AuthContext.Provider>
   );
